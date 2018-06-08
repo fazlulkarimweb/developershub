@@ -1,10 +1,18 @@
 const express = require("express");
-const app = express(); // Closures
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 // Importing Routes
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
+
+const app = express(); // Closures
+
+// Body Parser
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
 
 const db = require("./config/keys").mongoURI; // Require DB
 
