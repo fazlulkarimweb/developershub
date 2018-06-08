@@ -9,7 +9,7 @@ const posts = require("./routes/api/posts");
 const app = express(); // Closures
 
 // Body Parser
-// parse application/x-www-form-urlencoded
+// parse application/x-www-form-url fulllencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
