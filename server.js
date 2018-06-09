@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const passport = require("passport");
 // Importing Routes
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
@@ -21,11 +22,12 @@ mongoose
   .then(() => console.log("Mongodb  connected!"))
   .catch(error => console.log(error)); // Connect with MongoDB
 
-app.get("/", function(req, res) {
-  return res.send("Hello");
-});
-// Call Routes
+// Passport Intialize
+app.use(passport.initialize());
+// Import Passport Configuration File
+require("./config/passport")(passport); // closures
 
+// Call Routes
 app.use("/api/users", users);
 app.use("/api/profile", profile);
 app.use("/api/posts", posts);
