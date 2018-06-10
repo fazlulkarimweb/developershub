@@ -6,7 +6,8 @@ const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const User = require("../../models/User");
 const passport = require("passport");
-
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/register");
 // routes   GET api/users/test
 // desc     Tests get route
 // access   Public
@@ -16,6 +17,11 @@ router.get("/test", (req, res) => res.json({ msg: "User Works" }));
 // desc     Tests post route
 // access   Public
 router.post("/register", (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+  //Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       return res.status(400).json({ email: "Email already exists" });
@@ -54,13 +60,20 @@ router.post("/register", (req, res) => {
 // desc     Login users / Returning JWT TOken
 // access   Public
 router.post("/login", (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
+  //Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   const email = req.body.email;
   const password = req.body.password;
 
   //Find User By Email
   User.findOne({ email }).then(user => {
     if (!user) {
-      return res.status(404).json({ email: "User not found" });
+      errors.email = "User not found";
+      return res.status(404).json(errors);
     }
 
     //Check Password
@@ -84,7 +97,8 @@ router.post("/login", (req, res) => {
 
         //res.json({ msg: "Success" });
       } else {
-        return res.status(400).json({ password: "Password incorrect" });
+        errors.password = "Password incorrect";
+        return res.status(400).json(errors);
       }
     });
   });
